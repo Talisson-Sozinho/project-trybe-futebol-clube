@@ -9,4 +9,6 @@ const loginController = new LoginController();
 
 router.post('/', loginBodyValidate, loginController.login);
 
+router.get('/validate', loginController.loginValidate);
+
 export default router;
