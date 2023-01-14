@@ -4,7 +4,7 @@ import db from '.';
 class Users extends Model {
   declare id: number;
   declare username: string;
-  declare role: number;
+  declare role: string;
   declare email: string;
   declare password: string;
 }

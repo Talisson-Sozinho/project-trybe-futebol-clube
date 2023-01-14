@@ -16,6 +16,7 @@ class LoginService {
     if (!bcrypt.comparePassword(password, result.password)) {
       throw errorObjectConstructor(UNAUTHORIZED, 'Incorrect email or password');
     }
+
     const { id, username, role } = result;
 
     return jwt.tokenGenerator(id, username, role, email);
