@@ -18,12 +18,6 @@ const { app } = new App();
 const { expect } = chai;
 
 describe('Teste da rota /login/validate', () => {
-  afterEach(()=>{
-    (Users.findOne as sinon.SinonStub).restore();
-    (jwt.tokenGenerator as sinon.SinonStub).restore();
-    (jwt.tokenValidator as sinon.SinonStub).restore();
-  })
-
   it('Verifica se ao acessar a rota, ela responde a role certa: case "admin"', async () => {
     sinon
      .stub(Users, "findOne")
@@ -44,6 +38,10 @@ describe('Teste da rota /login/validate', () => {
   
     expect(chaiHttpResponse.status).to.be.equal(200);
     expect(chaiHttpResponse.body).to.be.deep.equal({ role: 'admin' });
+
+    (Users.findOne as sinon.SinonStub).restore();
+    (jwt.tokenGenerator as sinon.SinonStub).restore();
+    (jwt.tokenValidator as sinon.SinonStub).restore();
   });
 
   it('Verifica se ao acessar a rota, ela responde a role certa: case "user"', async () => {
@@ -63,6 +61,17 @@ describe('Teste da rota /login/validate', () => {
   
     expect(chaiHttpResponse.status).to.be.equal(200);
     expect(chaiHttpResponse.body).to.be.deep.equal({ role: 'user' });
+
+    (Users.findOne as sinon.SinonStub).restore();
+    (jwt.tokenGenerator as sinon.SinonStub).restore();
+    (jwt.tokenValidator as sinon.SinonStub).restore();
+  });
+
+  it('verifica se não for passado um token, ela retorna um erro', async () => {
+    const chaiHttpResponse = await chai.request(app).get('/login/validate').set('Authorization', '');
+  
+    expect(chaiHttpResponse.status).to.be.equal(400);
+    expect(chaiHttpResponse.body).to.be.deep.equal({ message: 'Token não encontrado' });
   });
 
 });
