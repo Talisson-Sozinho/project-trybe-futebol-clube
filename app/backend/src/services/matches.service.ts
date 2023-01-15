@@ -47,6 +47,13 @@ class MatchesService {
     const result = await this._model.create({ homeTeam, awayTeam, homeTeamGoals, awayTeamGoals });
     return result;
   }
+
+  public async finishMatch(id: number): Promise<object> {
+    await this._model.update({ inProgress: false }, {
+      where: { id },
+    });
+    return { message: 'Finished' };
+  }
 }
 
 export default MatchesService;

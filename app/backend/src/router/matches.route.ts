@@ -12,4 +12,6 @@ router.get('/', matchesController.matches);
 
 router.post('/', jwtValidateMiddleware, matchesController.newMatch);
 
+router.patch('/:id/finish', jwtValidateMiddleware, matchesController.finishMatch);
+
 export default router;

@@ -22,6 +22,12 @@ class MatchesController {
       .newMatch(homeTeam, awayTeam, homeTeamGoals, awayTeamGoals);
     return res.status(201).json(result);
   };
+
+  public finishMatch = async (req: Request, res: Response) => {
+    const { params: { id } } = req;
+    const result = await this._MatchesService.finishMatch(Number(id));
+    return res.status(200).json(result);
+  };
 }
 
 export default MatchesController;
