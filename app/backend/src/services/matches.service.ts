@@ -1,9 +1,15 @@
-import { errorObjectConstructor, BAD_REQUEST } from '../helpers/error.helper';
+import { Op } from 'sequelize';
+import {
+  errorObjectConstructor,
+  BAD_REQUEST,
+  UNPROCESSABLE_ENTITY,
+  NOT_FOUND,
+} from '../helpers/error.helper';
 import Teams from '../database/models/teams.model';
 import Matches from '../database/models/matches.model';
 
 class MatchesService {
-  constructor(private _model = Matches) {}
+  constructor(private _model = Matches, private _teamsModel = Teams) {}
 
   public async getAllMatches(): Promise<Matches[]> {
     const result = await this._model.findAll({
@@ -44,8 +50,22 @@ class MatchesService {
     homeTeamGoals:number,
     awayTeamGoals:number,
   ): Promise<Matches> {
-    const result = await this._model.create({ homeTeam, awayTeam, homeTeamGoals, awayTeamGoals });
-    return result;
+    if (homeTeam === awayTeam) {
+      throw errorObjectConstructor(
+        UNPROCESSABLE_ENTITY,
+        'It is not possible to create a match with two equal teams',
+      );
+    }
+
+    const teams = await this._teamsModel.findAll({
+      where: { [Op.or]: [{ id: homeTeam }, { id: awayTeam }] },
+    });
+
+    if (!teams || teams.length !== 2) {
+      throw errorObjectConstructor(NOT_FOUND, 'There is no team with such id!');
+    }
+
+    return this._model.create({ homeTeam, awayTeam, homeTeamGoals, awayTeamGoals });
   }
 
   public async finishMatch(id: number): Promise<object> {

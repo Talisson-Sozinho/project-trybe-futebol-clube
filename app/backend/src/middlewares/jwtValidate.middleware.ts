@@ -5,10 +5,13 @@ import jwt from '../helpers/jwt.helper';
 export default (req:Request, _res:Response, next:NextFunction) => {
   const { authorization } = req.headers;
   if (!authorization) {
-    throw errorObjectConstructor(UNAUTHORIZED, 'Token não encontrado');
+    throw errorObjectConstructor(UNAUTHORIZED, 'Token not found');
   }
-
-  jwt.tokenValidator(authorization);
+  try {
+    jwt.tokenValidator(authorization);
+  } catch (err) {
+    throw errorObjectConstructor(UNAUTHORIZED, 'Token must be a valid token');
+  }
 
   return next();
 };
