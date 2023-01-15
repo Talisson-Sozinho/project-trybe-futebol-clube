@@ -74,6 +74,13 @@ class MatchesService {
     });
     return { message: 'Finished' };
   }
+
+  public async updateMatch(id: number, homeTeamGoals: number, awayTeamGoals: number) {
+    await this._model.update({ homeTeamGoals, awayTeamGoals }, {
+      where: { id },
+    });
+    return { message: 'Updated' };
+  }
 }
 
 export default MatchesService;
