@@ -46,6 +46,7 @@ Matches.init({
   freezeTableName: true,
 });
 
-Matches.hasMany(Teams);
+Matches.belongsTo(Teams, { foreignKey: 'homeTeam', as: 'teamHome' });
+Matches.belongsTo(Teams, { foreignKey: 'awayTeam', as: 'teamAway' });
 
 export default Matches;

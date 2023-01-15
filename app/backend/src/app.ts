@@ -14,6 +14,7 @@ class App {
     this.app.get('/', (req, res) => res.json({ ok: true }));
     this.app.use('/login', router.loginRoute);
     this.app.use('/teams', router.teamsRoute);
+    this.app.use('/matches', router.matchesRoute);
     this.app.use(errorMiddleware);
   }
 
