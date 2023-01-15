@@ -37,6 +37,16 @@ class MatchesService {
     });
     return result;
   }
+
+  public async newMatch(
+    homeTeam:number,
+    awayTeam:number,
+    homeTeamGoals:number,
+    awayTeamGoals:number,
+  ): Promise<Matches> {
+    const result = await this._model.create({ homeTeam, awayTeam, homeTeamGoals, awayTeamGoals });
+    return result;
+  }
 }
 
 export default MatchesService;

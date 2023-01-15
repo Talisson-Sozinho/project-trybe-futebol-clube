@@ -35,8 +35,8 @@ Matches.init({
     type: INTEGER,
   },
   inProgress: {
-    allowNull: false,
     type: BOOLEAN,
+    defaultValue: true,
   },
 }, {
   sequelize: db,
