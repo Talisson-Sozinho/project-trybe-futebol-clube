@@ -1,30 +1,23 @@
-import { errorObjectConstructor } from '../helpers/error.helper';
-import Teams from '../database/models/teams.model';
 import MatchesService from './matches.service';
 import Table from '../helpers/tableType';
 import tableCalculator from '../helpers/tablePointsCalculator';
 
 class LeaderboardService {
-  constructor(
-    private _teamsModels = Teams,
-    private _matchesService = new MatchesService(),
-  ) {}
+  constructor(private _matchesService = new MatchesService()) {}
 
   public async homeFilter() {
     const finishedMatches = await this._matchesService.getMatchesInProgress('false');
 
     const tableHome: Table[] = [];
 
-    const promises = finishedMatches.map(async ({ homeTeam, homeTeamGoals, awayTeamGoals }) => {
-      const result = await this._teamsModels.findByPk(homeTeam);
+    const promises = finishedMatches.map(async ({ dataValues, homeTeamGoals, awayTeamGoals }) => {
+      const { teamHome: { teamName } } = dataValues;
 
-      if (!result) throw errorObjectConstructor('Internal error', 'alguma coisa ta errada');
-
-      const team = tableHome.find(({ name }) => name === result.teamName);
+      const team = tableHome.find(({ name }) => name === teamName);
 
       if (!team) {
         tableHome.push(
-          tableCalculator.firstGameCalculator(result.teamName, homeTeamGoals, awayTeamGoals),
+          tableCalculator.firstGameCalculator(teamName, homeTeamGoals, awayTeamGoals),
         );
       } else {
         tableCalculator.updateTableTeamStats(team, homeTeamGoals, awayTeamGoals);
@@ -43,16 +36,14 @@ class LeaderboardService {
 
     const tableAway: Table[] = [];
 
-    const promises = finishedMatches.map(async ({ awayTeam, homeTeamGoals, awayTeamGoals }) => {
-      const result = await this._teamsModels.findByPk(awayTeam);
+    const promises = finishedMatches.map(async ({ dataValues, homeTeamGoals, awayTeamGoals }) => {
+      const { teamAway: { teamName } } = dataValues;
 
-      if (!result) throw errorObjectConstructor('Internal error', 'alguma coisa ta errada');
-
-      const team = tableAway.find(({ name }) => name === result.teamName);
+      const team = tableAway.find(({ name }) => name === teamName);
 
       if (!team) {
         tableAway.push(
-          tableCalculator.firstGameCalculator(result.teamName, awayTeamGoals, homeTeamGoals),
+          tableCalculator.firstGameCalculator(teamName, awayTeamGoals, homeTeamGoals),
         );
       } else {
         tableCalculator.updateTableTeamStats(team, awayTeamGoals, homeTeamGoals);
