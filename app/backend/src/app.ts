@@ -15,6 +15,7 @@ class App {
     this.app.use('/login', router.loginRoute);
     this.app.use('/teams', router.teamsRoute);
     this.app.use('/matches', router.matchesRoute);
+    this.app.use('/leaderboard', router.leaderboardRoute);
     this.app.use(errorMiddleware);
   }
 
